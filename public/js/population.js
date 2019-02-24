@@ -4,8 +4,11 @@ function Population(num_dots = 100, start_pos) {
 	this.fitnessSum = 0;
 	this.gen = 1;
 	this.bestDot = 0;
-	this.minStep = 1000;
+	this.minStep = 250;
 	this.bestSteps = 0;
+	this.play = true;
+	this.num_dots = num_dots;
+	this.start_pos = start_pos;
 
 	for(var i = 0; i < num_dots; i++) {
 		this.dots.push(new Dot(start_pos));
@@ -18,14 +21,15 @@ Population.prototype.draw = function(ctx) {
 	this.dots[0].draw(ctx);
 };
 Population.prototype.update = function(goal, walls) {
-	for(var i = 0; i < this.dots.length; i++) {
-		if (this.dots[i].brain.step > this.minStep) {
-			this.dots[i].dead = true;
-		} else {
-			this.dots[i].update(goal, walls);
+	if (this.play) {
+		for(var i = 0; i < this.dots.length; i++) {
+			if (this.dots[i].brain.step > this.minStep) {
+				this.dots[i].dead = true;
+			} else {
+				this.dots[i].update(goal, walls);
+			}
 		}
 	}
-	var a = true;
 };
 Population.prototype.calculateFitness = function(goal) {
 	for(var i = 0; i < this.dots.length; i++) {
@@ -86,5 +90,23 @@ Population.prototype.setBestDot = function() {
 		//this eliminates the number of steps that can be taken
 		// this.minStep = this.dots[this.bestDot].brain.step;
 		this.bestSteps = this.dots[this.bestDot].brain.step;
+	}
+};
+Population.prototype.pause = function() {
+	this.play = false;
+};
+Population.prototype.resume = function() {
+	this.play = true;
+};
+Population.prototype.restart = function() {
+	this.dots = [];
+	this.fitnessSum = 0;
+	this.gen = 1;
+	this.bestDot = 0;
+	this.bestSteps = 0;
+	this.play = true;
+
+	for(var i = 0; i < this.num_dots; i++) {
+		this.dots.push(new Dot(this.start_pos));
 	}
 };

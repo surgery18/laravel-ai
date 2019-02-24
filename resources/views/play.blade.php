@@ -10,21 +10,28 @@
 @section('content')
 <div class="d-flex flex-row mt-2" id="app">
 	<div class="info">
-		<div class="card" style="width: 200px;">
+		<div class="card" style="width: 236px;">
 			<div class="card-body">
 				<div class="text-center mb-2">
 					<a href="{{url('/')}}" class="btn btn-primary">Home</a>
+					<a href="{{url('/editor/'.$level->id)}}" class="btn btn-primary">Edit</a>
 				</div>
 				<h3 class="card-title text-center">Info</h3>
 				<hr />
 				<h4 class="text-center">{{$level->name}}</h4>
 				<h4>Gen: <span v-text="gen"></span></h4>
+				<h5 v-if="solved_gen">Solved At Gen @{{solved_gen}}</h5>
 				<div class="form-group">
 					<label class="control-label">Mutation Rate</label>
-					<input type="number" v-model="mutrate" class="form-control" step="0.001" />
+					<input type="text" v-model="mutrate" class="form-control" />
+				</div>
+				<div class="btn-group mb-2" role="group">
+					<button type="button" class="btn btn-secondary" @click="pause">Pause</button>
+					<button type="button" class="btn btn-secondary" @click="play">Play</button>
+					<button type="button" class="btn btn-secondary" @click="restart">Restart</button>
 				</div>
 				<div v-for="h in history">
-					<h5>Steps: @{{h}}</h5>
+					<h6>Steps: @{{h.steps}}, Gen: @{{h.gen}}</h6>
 				</div>
 			</div>
 		</div>
@@ -55,12 +62,14 @@ function game_loop() {
 }
 
 function update() {
-	if (population.allDotsDead()) {
-		population.calculateFitness(end);
-		population.naturalSelection();
-		population.mutateBabies();
-	} else {
-		population.update(end, walls);
+	if (population.play) {
+		if (population.allDotsDead()) {
+			population.calculateFitness(end);
+			population.naturalSelection();
+			population.mutateBabies();
+		} else {
+			population.update(end, walls);
+		}
 	}
 }
 
@@ -85,6 +94,7 @@ var app = new Vue({
 			mutrate: mutRate,
 			history: [],
 			history_max: 5,
+			solved_gen: null,
 		};
 	},
 	mounted: function() {
@@ -111,13 +121,25 @@ var app = new Vue({
 		},
 		"pop.bestSteps": function(v, ov) {
 			if (ov != v) {
-				this.history.splice(0,0,v);
+				if (!this.solved_gen) this.solved_gen = this.pop.gen;
+				this.history.splice(0,0,{steps: v, gen: this.pop.gen});
 				if (this.history.length > this.history_max) {
 					this.history.pop();
 				}
 			}
 		},
 	},
+	methods: {
+		pause: function(){
+			this.pop.pause();
+		},
+		play: function(){
+			this.pop.resume();
+		},
+		restart: function(){
+			this.pop.restart();
+		},
+	}
 });
 </script>
 @endsection

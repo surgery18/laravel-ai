@@ -65,7 +65,7 @@ Dot.prototype.calculateFitness = function(goal) {
 	} else {
 		var distToGoal = dist(this.pos[0], this.pos[1], goal[0], goal[1]);
 		if (this.diedByWall) {
-			distToGoal *= 0.9;
+			// distToGoal *= 1.5; //0.9
 		}
 		this.fitness = 1.0/(distToGoal * distToGoal);
 	}
