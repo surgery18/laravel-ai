@@ -1,22 +1,27 @@
 var counter = 0;
+var minStep = 250;
 function Population(num_dots = 100, start_pos) {
 	this.dots = [];
 	this.fitnessSum = 0;
 	this.gen = 1;
 	this.bestDot = 0;
-	this.minStep = 250;
+	this.minStep = minStep;
 	this.bestSteps = 0;
 	this.play = true;
 	this.num_dots = num_dots;
 	this.start_pos = start_pos;
+	this.draw_only_best = false;
+	this.stop_after_best_steps = false;
 
 	for(var i = 0; i < num_dots; i++) {
 		this.dots.push(new Dot(start_pos));
 	}
 }
 Population.prototype.draw = function(ctx) {
-	for(var i = 1; i < this.dots.length; i++) {
-		this.dots[i].draw(ctx);
+	if (!this.draw_only_best) {
+		for(var i = 1; i < this.dots.length; i++) {
+			this.dots[i].draw(ctx);
+		}
 	}
 	this.dots[0].draw(ctx);
 };
@@ -88,7 +93,7 @@ Population.prototype.setBestDot = function() {
 	this.bestDot = maxIndex;
 	if (this.dots[this.bestDot].reachedGoal) {
 		//this eliminates the number of steps that can be taken
-		// this.minStep = this.dots[this.bestDot].brain.step;
+		if (this.stop_after_best_steps) this.minStep = this.dots[this.bestDot].brain.step;
 		this.bestSteps = this.dots[this.bestDot].brain.step;
 	}
 };
@@ -105,6 +110,7 @@ Population.prototype.restart = function() {
 	this.bestDot = 0;
 	this.bestSteps = 0;
 	this.play = true;
+	this.minStep = minStep;
 
 	for(var i = 0; i < this.num_dots; i++) {
 		this.dots.push(new Dot(this.start_pos));

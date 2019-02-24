@@ -30,6 +30,18 @@
 					<button type="button" class="btn btn-secondary" @click="play">Play</button>
 					<button type="button" class="btn btn-secondary" @click="restart">Restart</button>
 				</div>
+				<div>
+					<label>
+						<input type="checkbox" v-model="draw_best"/>
+						Draw Only Best
+					</label>
+				</div>
+				<div class="mb-2">
+					<label>
+						<input type="checkbox" v-model="stop_after_best_steps"/>
+						Stop dots after best min steps.
+					</label>
+				</div>
 				<div v-for="h in history">
 					<h6>Steps: @{{h.steps}}, Gen: @{{h.gen}}</h6>
 				</div>
@@ -95,6 +107,8 @@ var app = new Vue({
 			history: [],
 			history_max: 5,
 			solved_gen: null,
+			draw_best: false,
+			stop_after_best_steps: false,
 		};
 	},
 	mounted: function() {
@@ -111,6 +125,12 @@ var app = new Vue({
 		},
 	},
 	watch: {
+		stop_after_best_steps: function(v) {
+			this.pop.stop_after_best_steps = v;
+		},
+		draw_best: function(v) {
+			this.pop.draw_only_best = v;
+		},
 		mutrate: function(v, ov) {
 			var f = parseFloat(v);
 			if (!isNaN(f)) {
