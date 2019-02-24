@@ -13,6 +13,9 @@
 		<div class="toolbox">
 			<div class="card" style="width: 200px;">
 				<div class="card-body">
+					<div class="text-center mb-2">
+						<a href="{{url('/')}}" class="btn btn-primary">Home</a>
+					</div>
 					<h3 class="card-title text-center">Tools</h3>
 					<hr />
 					<div>
@@ -53,6 +56,7 @@
 					</div>
 					<div class="text-center mt-2">
 						<button type="button" class="btn btn-success" @click="save">Save Level</button>
+						<button type="button" class="btn btn-success" @click="play" :disabled="!level_id">Play</button>
 					</div>
 				</div>
 			</div>
@@ -67,7 +71,6 @@
 <script src="{{Helper::asset_nocache('js/map.js')}}"></script>
 <script>
 var csrf_token = "{{csrf_token()}}";
-var level_id = {{$level->id ?? "null"}};
 
 var walls = {!! json_encode($walls) !!};
 var start = {!! json_encode($start) !!};
@@ -104,6 +107,7 @@ var app = new Vue({
 			tool: "wall",
 			down: false,
 			name: '{{$level->name ?? ""}}',
+			level_id: {{$level->id ?? "null"}},
 		};
 	},
 	mounted: function() {
@@ -115,10 +119,14 @@ var app = new Vue({
 		draw();
 	},
 	methods: {
+		play: function() {
+			window.location = super_path + "/play/"+this.level_id;
+		},
 		save: function() {
 			//save to db
-			var type = level_id ? "put" : "post";
-			var extra = level_id ? "/" + level_id : "";
+			var _this = this;
+			var type = this.level_id ? "put" : "post";
+			var extra = this.level_id ? "/" + this.level_id : "";
 			var info = {
 				walls: walls,
 				start: start,
@@ -134,9 +142,8 @@ var app = new Vue({
 			}).then(function(response) {
 				if (response.data.ok) {
 					console.log("Saved Level");
-					if (!level_id) {
-						level_id = response.data.id;
-						console.log("Level ID:", level_id);
+					if (!_this.level_id) {
+						_this.level_id = response.data.id;
 					}
 				} else {
 					console.log(response);

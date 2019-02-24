@@ -4,6 +4,8 @@ var start_radius = 10;
 var end_width = 20;
 var end_height = 20;
 
+var mutRate = 0.25;
+
 
 function collision(point, pw, ph, wall, ww, wh) {
 	var left = point.x;

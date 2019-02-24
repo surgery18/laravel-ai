@@ -4,8 +4,7 @@
 @section('content')
 <section class="jumbotron text-center bg-white">
 	<div class="container">
-		<h1 class="jumbotron-heading">AI Example</h1>
-		<p class="lead text-muted">This project is to Machine Learning Artificial Intelligence. We will be using a map with obstucles the ai must overcome.</p>
+		<h1 class="jumbotron-heading">AI Examples</h1>
 		<p>
 			<a href="{{route('editor')}}" class="btn btn-primary my-2">Make New Level</a>
 		</p>

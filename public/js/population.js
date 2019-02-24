@@ -5,6 +5,7 @@ function Population(num_dots = 100, start_pos) {
 	this.gen = 1;
 	this.bestDot = 0;
 	this.minStep = 1000;
+	this.bestSteps = 0;
 
 	for(var i = 0; i < num_dots; i++) {
 		this.dots.push(new Dot(start_pos));
@@ -81,8 +82,9 @@ Population.prototype.setBestDot = function() {
 		}
 	}
 	this.bestDot = maxIndex;
-	//this eliminates the number or steps
-	// if (this.dots[this.bestDot].reachedGoal) {
-	// 	this.minStep = this.dots[this.bestDot].brain.step;
-	// }
+	if (this.dots[this.bestDot].reachedGoal) {
+		//this eliminates the number of steps that can be taken
+		// this.minStep = this.dots[this.bestDot].brain.step;
+		this.bestSteps = this.dots[this.bestDot].brain.step;
+	}
 };

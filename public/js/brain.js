@@ -17,12 +17,14 @@ Brain.prototype.randomize = function() {
 Brain.prototype.clone = function() {
 	var clone = new Brain(this.directions.length);
 	for(var i = 0; i < this.directions.length; i++) {
-		clone.directions[i] = JSON.parse(JSON.stringify(this.directions[i]));
+		//clone.directions[i] = JSON.parse(JSON.stringify(this.directions[i]));
+		clone.directions[i][0] = this.directions[i][0];
+		clone.directions[i][1] = this.directions[i][1];
 	}
 	return clone;
 };
 Brain.prototype.mutate = function() {
-	var mutRate = 0.25; //0.01
+	//var mutRate = 0.25; //0.01
 	for(var i = 0; i < this.directions.length; i++) {
 		var rand = Math.random();
 		if (rand < mutRate) {

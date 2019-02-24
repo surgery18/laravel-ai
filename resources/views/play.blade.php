@@ -12,10 +12,20 @@
 	<div class="info">
 		<div class="card" style="width: 200px;">
 			<div class="card-body">
+				<div class="text-center mb-2">
+					<a href="{{url('/')}}" class="btn btn-primary">Home</a>
+				</div>
 				<h3 class="card-title text-center">Info</h3>
 				<hr />
 				<h4 class="text-center">{{$level->name}}</h4>
 				<h4>Gen: <span v-text="gen"></span></h4>
+				<div class="form-group">
+					<label class="control-label">Mutation Rate</label>
+					<input type="number" v-model="mutrate" class="form-control" step="0.001" />
+				</div>
+				<div v-for="h in history">
+					<h5>Steps: @{{h}}</h5>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -72,6 +82,9 @@ var app = new Vue({
 	data: function(){
 		return {
 			pop: population,
+			mutrate: mutRate,
+			history: [],
+			history_max: 5,
 		};
 	},
 	mounted: function() {
@@ -85,6 +98,24 @@ var app = new Vue({
 	computed: {
 		gen: function() {
 			return this.pop.gen;
+		},
+	},
+	watch: {
+		mutrate: function(v, ov) {
+			var f = parseFloat(v);
+			if (!isNaN(f)) {
+				mutRate = v;
+			} else {
+				this.mutrate = mutRate;
+			}
+		},
+		"pop.bestSteps": function(v, ov) {
+			if (ov != v) {
+				this.history.splice(0,0,v);
+				if (this.history.length > this.history_max) {
+					this.history.pop();
+				}
+			}
 		},
 	},
 });

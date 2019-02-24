@@ -8,7 +8,7 @@ use App\Level;
 class PageController extends Controller
 {
 	public function index(Request $request) {
-		$levels = Level::all();
+		$levels = Level::orderBy('name', 'DESC')->get();
 		return view('home', compact('levels'));
 	}
 
